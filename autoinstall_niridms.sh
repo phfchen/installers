@@ -180,9 +180,9 @@ if [[ $SUNSHINE =~ ^[Yy]$ ]]; then
        	print_error "Failed to install remote desktop streaming packages - please check ${LOG} \n"
     else
         printf " Activating avahi-daemon services for Sunshine...\n"
-        sudo systemctl enable --now avahi-daemon
+        sudo systemctl enable --now avahi-daemon 2>&1 | tee -a $LOG
         sleep 1
-        systemctl --user enable --now sunshine.service
+        systemctl --user enable --now sunshine.service 2>&1 | tee -a $LOG
     fi
 else
     printf "${YELLOW} No remote desktop streaming packages installed. Goodbye!\n"
@@ -197,9 +197,9 @@ if [[ $ASUS =~ ^[Yy]$ ]]; then
         print_error "Failed to install Asus ROG laptop packages - please check ${LOG}\n"
     else
         printf " Activating Asus services...\n"
-        sudo systemctl enable --now asusd.service
+        sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
         sleep 1
-        sudo systemctl enable --now supergfxd.service
+        sudo systemctl enable --now supergfxd.service 2>&1 | tee -a $LOG
         sleep 1
     fi
 else
@@ -217,7 +217,7 @@ if [[ $ASUSFINGERPRINT =~ ^[Yy]$ ]]; then
         print_error "Failed to install Asus ROG G14 fingerprint packages - please check ${LOG}\n"
     else
         printf " Activating Asus ROG G14 fingerprint services...\n"
-        sudo systemctl enable --now asusd.service
+        sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
         sleep 1
     fi
 else
@@ -228,7 +228,7 @@ fi
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install SDDM Login Manager? (y/n)" LOGINMAN
 if [[ $LOGINMAN =~ ^[Yy]$ ]]; then
     printf "${GREEN} Removing existing LightDM packages...\n"
-    sudo systemctl disable lightdm.service
+    sudo systemctl disable lightdm.service 2>&1 | tee -a $LOG
     $aur -Rns --noconfirm lightdm lightdm-gtk-greeter 2>&1 | tee -a $LOG
 
     printf "${GREEN} Installing SDDM packages...\n"
