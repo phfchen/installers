@@ -100,11 +100,11 @@ fi
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     blackedarch_pkgs="aircrack-ng arp-scan burpsuite dirbuster exploitdb graphviz gnu-netcat hcxdumptool hcxtools hydra less metasploit netdiscover nikto nmap proxychains-ng python-requests sublist3r whatweb wireshark-qt"
-    app_pkgs="firefox gimp gparted libreoffice openvpn vlc zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="brightnessctl cifs-utils fzf gvfs-nfs gvfs-smb networkmanager-openvpn neofetch nfs-utils pacman-contrib power-profiles-daemon python-pip rust-script slurp smblient trash-cli unzip usbutils"
-    font_pkgs="noto-fonts-cjk noto-fonts-emoji"
+    app_pkgs="openvpn vlc zathura zathura-pdf-mupdf zathura-ps"
+    util_pkgs="brightnessctl cifs-utils fzf gparted gvfs-nfs gvfs-smb network-manager-applet networkmanager-openvpn neofetch nfs-utils pacman-contrib power-profiles-daemon python-pip rust-script slurp smblient thunar thunar-archive-plugin thunar-volman thunar-media-tas-plugins vlc-plugin-ffmpeg tumbler trash-cli unzip usbutils"
+    font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
-    extra_pkgs="brave-bin joplin joplin-desktop"
+    extra_pkgs="brave-bin mullvad-browser-bin gimp joplin-desktop libreoffice"
     if ! $aur -S --noconfirm --needed $blackedarch_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install additional packages - please check ${LOG}\n"
         exit 1

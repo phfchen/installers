@@ -42,7 +42,7 @@ else
     read -n1 -rep "${CAT} Would you like to install git and dependencies? (y/n)" GIT
     if [[ $GIT =~ ^[Yy]$ ]]; then
         printf "${GREEN} Installing git and dependencies.\n"
-        sudo pacman -S --noconfirm --needed git base-devel
+        sudo pacman -S --noconfirm --needed git base-devel 2>&1 | tee -a $LOG
         sleep 3
     else
         printf "${RED} git and dependencies are needed for AUR Helper installation. Goodbye!\n"
@@ -60,13 +60,13 @@ else
     printf "${YELLOW} - paru NOT found.\n"
     read -n4 -rep "${CAT} paru is needed, would you like to install paru? (y/n)" AUR
     if [[ $AUR =~ ^[Yy]$ ]]; then
-        mkdir -p ~/Documents/git
-        cd ~/Documents/git
-        git clone https://aur.archlinux.org/paru.git
-        cd paru
+        mkdir -p ~/Documents/git 2>&1 | tee -a $LOG
+        cd ~/Documents/git 2>&1 | tee -a $LOG
+        git clone https://aur.archlinux.org/paru.git 2>&1 | tee -a $LOG
+        cd paru 2>&1 | tee -a $LOG
         makepkg -si --noconfirm --needed 2>&1 | tee -a $LOG
-        cd ..
-	    rm -rf paru
+        cd .. 2>&1 | tee -a $LOG
+	    rm -rf paru 2>&1 | tee -a $LOG
         aur=paru
         # Perform system update
         printf "${YELLOW} Upgrading AUR packages to avoid issue.\n"
@@ -81,11 +81,11 @@ fi
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats power-profiles-daemon swayimg wev"
-    app_pkgs="vlc zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
+    app_pkgs=" vlc zathura zathura-pdf-mupdf zathura-ps"
+    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
     font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
-    extra_pkgs="brave-bin gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
+    extra_pkgs="brave-bin mullvad-browser-bin gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
     if ! $aur -S --noconfirm --needed $dms_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install additional packages - please check ${LOG}\n"
         exit 1
@@ -113,9 +113,9 @@ fi
 read -n1 -rep "${CAT} Would you like to git clone and symbolic link config files? (y/n)" GITCFG
 if [[ $GITCFG =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Git cloning GitHub files...\n"
-    mkdir -p ~/Temp
-    mkdir -p ~/Documents/git/fphchen/
-    cd ~/Documents/git/fphchen
+    mkdir -p ~/Temp 2>&1 | tee -a $LOG
+    mkdir -p ~/Documents/git/fphchen/ 2>&1 | tee -a $LOG
+    cd ~/Documents/git/fphchen 2>&1 | tee -a $LOG
     git clone https://github.com/fphchen/dotfiles.git 2>&1 | tee -a $LOG
     git clone https://github.com/fphchen/installers.git 2>&1 | tee -a $LOG
     git clone https://github.com/fphchen/wallpapers.git 2>&1 | tee -a $LOG
@@ -147,7 +147,7 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     ln -s ~/Documents/git/fphchen/dotfiles/configs/.vimrc ~/ 2>&1 | tee -a $LOG
 
     ### Symbolic linking Pipewire upmix for 7.1 Surround Sound ###
-    mkdir -p ~/.config/pipewire/pipewire-pulse.conf.d
+    mkdir -p ~/.config/pipewire/pipewire-pulse.conf.d 2>&1 | tee -a $LOG
     ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf ~/.config/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
     sudo ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf /etc/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
 else
@@ -219,12 +219,12 @@ fi
 ### Enable SDDM Autologin ###
 read -n1 -rep "${CAT} OPTIONAL - Would you like to enable SDDM autologin? (y/n)" SDDM
 if [[ $SDDM =~ ^[Yy]$ ]]; then
-    sudo mkdir -p /etc/sddm.conf.d
+    sudo mkdir -p /etc/sddm.conf.d 2>&1 | tee -a $LOG
     LOC="/etc/sddm.conf.d/autologin.conf"
     echo -e "The following has been added to $LOC."
     echo -e "[Autologin]\nUser=$(whoami)\nSession=niri" | sudo tee -a $LOC
-    #echo -e "Restarting SDDM service...\n"
-    #sudo systemctl reload-or-restart sddm
+    echo -e "Restarting SDDM service...\n"
+    sudo systemctl reload-or-restart sddm 2>&1 | tee -a $LOG
     sleep 1
 else
     printf "${YELLOW} SDDM Autologin NOT enabled. Moving on!\n"
