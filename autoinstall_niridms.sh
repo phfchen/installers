@@ -42,7 +42,7 @@ else
     read -n1 -rep "${CAT} Would you like to install git and dependencies? (y/n)" GIT
     if [[ $GIT =~ ^[Yy]$ ]]; then
         printf "${GREEN} Installing git and dependencies.\n"
-        sudo pacman -S --noconfirm --needed git base-devel
+        sudo pacman -S --noconfirm --needed git base-devel 2>&1 | tee -a $LOG
         sleep 3
     else
         printf "${RED} git and dependencies are needed for AUR Helper installation. Goodbye!\n"
@@ -60,13 +60,13 @@ else
     printf "${YELLOW} - paru NOT found.\n"
     read -n4 -rep "${CAT} paru is needed, would you like to install paru? (y/n)" AUR
     if [[ $AUR =~ ^[Yy]$ ]]; then
-        mkdir -p ~/Documents/git
-        cd ~/Documents/git
-        git clone https://aur.archlinux.org/paru.git
-        cd paru
+        mkdir -p ~/Documents/git 2>&1 | tee -a $LOG
+        cd ~/Documents/git 2>&1 | tee -a $LOG
+        git clone https://aur.archlinux.org/paru.git 2>&1 | tee -a $LOG
+        cd paru 2>&1 | tee -a $LOG
         makepkg -si --noconfirm --needed 2>&1 | tee -a $LOG
-        cd ..
-	    rm -rf paru
+        cd .. 2>&1 | tee -a $LOG
+	    rm -rf paru 2>&1 | tee -a $LOG
         aur=paru
         # Perform system update
         printf "${YELLOW} Upgrading AUR packages to avoid issue.\n"
@@ -82,10 +82,10 @@ read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats power-profiles-daemon swayimg wev"
     app_pkgs="vlc zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gparted lf neofetch networkmanager nwg-look polkit polkit-gnome slurp usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
+    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
     font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
-    extra_pkgs="brave-bin gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
+    extra_pkgs="brave-bin mullvad-browser-bin gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
     if ! $aur -S --noconfirm --needed $dms_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install additional packages - please check ${LOG}\n"
         exit 1
@@ -113,9 +113,9 @@ fi
 read -n1 -rep "${CAT} Would you like to git clone and symbolic link config files? (y/n)" GITCFG
 if [[ $GITCFG =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Git cloning GitHub files...\n"
-    mkdir -p ~/Temp
-    mkdir -p ~/Documents/git/fphchen/
-    cd ~/Documents/git/fphchen
+    mkdir -p ~/Temp 2>&1 | tee -a $LOG
+    mkdir -p ~/Documents/git/fphchen/ 2>&1 | tee -a $LOG
+    cd ~/Documents/git/fphchen 2>&1 | tee -a $LOG
     git clone https://github.com/fphchen/dotfiles.git 2>&1 | tee -a $LOG
     git clone https://github.com/fphchen/installers.git 2>&1 | tee -a $LOG
     git clone https://github.com/fphchen/wallpapers.git 2>&1 | tee -a $LOG
@@ -147,28 +147,12 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     ln -s ~/Documents/git/fphchen/dotfiles/configs/.vimrc ~/ 2>&1 | tee -a $LOG
 
     ### Symbolic linking Pipewire upmix for 7.1 Surround Sound ###
-    mkdir -p ~/.config/pipewire/pipewire-pulse.conf.d
+    mkdir -p ~/.config/pipewire/pipewire-pulse.conf.d 2>&1 | tee -a $LOG
     ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf ~/.config/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
     sudo ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf /etc/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
 else
     printf "${YELLOW} No symbolic link created. Moving on!\n"
     sleep 1
-fi
-
-# ACPI
-read -n1 -rep "${CAT} OPTIONAL - Would you like to install ACPI packages? (y/n)" ACPI
-if [[ $ACPI =~ ^[Yy]$ ]]; then
-    printf "${GREEN} Installing ACPI packages...\n"
-    acpi_pkgs="acpid"
-    if ! $aur -S --noconfirm --needed $acpi_pkgs 2>&1 | tee -a $LOG; then
-        print_error "Failed to install ACPI packages - please check ${LOG}\n"
-    else
-        printf " Activating ACPI services...\n"
-        sudo systemctl enable --now acpid.service
-        sleep 1
-    fi
-else
-    printf "${YELLOW} No ACPI packages installed. Moving on!\n"
 fi
 
 # SUNSHINE
@@ -182,7 +166,7 @@ if [[ $SUNSHINE =~ ^[Yy]$ ]]; then
         printf " Activating avahi-daemon services for Sunshine...\n"
         sudo systemctl enable --now avahi-daemon 2>&1 | tee -a $LOG
         sleep 1
-        systemctl --user enable --now sunshine.service 2>&1 | tee -a $LOG
+        systemctl --user --now enable app-dev.lizardbyte.app.Sunshine 2>&1 | tee -a $LOG
     fi
 else
     printf "${YELLOW} No remote desktop streaming packages installed. Goodbye!\n"
@@ -203,46 +187,24 @@ if [[ $ASUS =~ ^[Yy]$ ]]; then
         sleep 1
     fi
 else
-    printf "${YELLOW} No Asus packages installed. Moving on!\n"
-fi
-
-# Asus Rog G14 Fingerprint Scanner packages
-read -n1 -rep "${CAT} OPTIONAL - Would you like to install Asus ROG G14 fingerprint packages? (y/n)" ASUSFINGERPRINT
-if [[ $ASUSFINGERPRINT =~ ^[Yy]$ ]]; then
-    printf "${YELLOW} Removing libfprint package conflicts.\n"
-    $aur -Rns libfprint fprintd 2>&1 | tee -a $LOG
-    printf "${GREEN} Installing Asus ROG G14 fingerprint packages...\n"
-    asusfp_pkgs="libfprint-goodix-521d fprintd"
-    if ! $aur -S --noconfirm --needed $asusfp_pkgs 2>&1 | tee -a $LOG; then
-        print_error "Failed to install Asus ROG G14 fingerprint packages - please check ${LOG}\n"
-    else
-        printf " Activating Asus ROG G14 fingerprint services...\n"
-        sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
-        sleep 1
-    fi
-else
-    printf "${YELLOW} No Asus packages installed. Moving on!\n"
+    printf "${YELLOW} No Asus ROG laptop packages installed. Moving on!\n"
 fi
 
 ### SDDM Packages ###
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install SDDM Login Manager? (y/n)" LOGINMAN
 if [[ $LOGINMAN =~ ^[Yy]$ ]]; then
-    printf "${GREEN} Removing existing LightDM packages...\n"
-    sudo systemctl disable lightdm.service 2>&1 | tee -a $LOG
-    $aur -Rns --noconfirm lightdm lightdm-gtk-greeter 2>&1 | tee -a $LOG
-
     printf "${GREEN} Installing SDDM packages...\n"
     loginman_pkgs="sddm qt5-declarative qt5-graphicaleffects qt5-quickcontrols qt5-quickcontrols2 qt5-svg qt5-multimedia gst-libav gst-plugins-good phonon-qt5-gstreamer"
     if ! $aur -S --noconfirm --needed $loginman_pkgs 2>&1 | tee -a $LOG; then
         print_error "Failed to install SDDM packages - please check ${LOG}\n"
     else
         printf " Copying SDDM config files, themes, icons from cloned git repositories"
-        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf /etc/sddm.conf >&1 | tee -a $LOG
-        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf.d /etc/sddm.conf.d >&1 | tee -a $LOG
-        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/themes/archcraft /usr/share/sddm/themes/archcraft >&1 | tee -a $LOG
-        sudo cp -r ~/Documents/git/fphchen/dotfiles/images/.face  ~/.face >&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf /etc/sddm.conf 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf.d /etc/sddm.conf.d 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/themes/archcraft /usr/share/sddm/themes/archcraft 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/fphchen/dotfiles/images/.face  ~/.face 2>&1 | tee -a $LOG
         printf " Activating SDDM services...\n"
-        sudo systemctl enable sddm.service >&1 | tee -a $LOG
+        sudo systemctl enable sddm.service 2>&1 | tee -a $LOG
         sleep 1
     fi
 else
@@ -252,15 +214,28 @@ fi
 ### Enable SDDM Autologin ###
 read -n1 -rep "${CAT} OPTIONAL - Would you like to enable SDDM autologin? (y/n)" SDDM
 if [[ $SDDM =~ ^[Yy]$ ]]; then
-    sudo mkdir -p /etc/sddm.conf.d
+    sudo mkdir -p /etc/sddm.conf.d 2>&1 | tee -a $LOG
     LOC="/etc/sddm.conf.d/autologin.conf"
     echo -e "The following has been added to $LOC."
     echo -e "[Autologin]\nUser=$(whoami)\nSession=niri" | sudo tee -a $LOC
-    #echo -e "Restarting SDDM service...\n"
-    #sudo systemctl reload-or-restart sddm
+    echo -e "Restarting SDDM service...\n"
+    sudo systemctl reload-or-restart sddm 2>&1 | tee -a $LOG
     sleep 1
 else
     printf "${YELLOW} SDDM Autologin NOT enabled. Moving on!\n"
+fi
+
+### Blackarch Packages ###
+read -n1 -rep "${CAT} OPTIONAL - Would you like to install Blackarch Packages? (y/n)" BLACKARCH
+if [[ $BLACKARCH =~ ^[Yy]$ ]]; then
+    printf "${GREEN} Installing Blackarch packages...\n"
+    blackedarch_pkgs="aircrack-ng arp-scan burpsuite dirbuster exploitdb graphviz gnu-netcat hcxdumptool hcxtools hydra less metasploit netdiscover nikto nmap proxychains-ng python-requests sublist3r whatweb wireshark-qt"
+    if ! $aur -S --noconfirm --needed $blackedarch_pkgs 2>&1 | tee -a $LOG; then
+        print_error "Failed to install BlackArch packages - please check ${LOG}\n"
+        sleep 1
+    fi
+else
+    printf "${YELLOW} No Blackarch Packages installed. Moving on!\n"
 fi
 
 printf "${GREEN} Autoinstaller completed.\n"
