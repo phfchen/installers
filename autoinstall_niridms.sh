@@ -44,14 +44,14 @@ done 2>/dev/null &
 PACMAN_CONF="/etc/pacman.conf"
 
 # Multilib Repository 
-echo "${GREEN} Checking multilib repository status..."
+echo "${GREEN} Checking multilib repository status...\n"
 # Check if multilib is already uncommented
 if grep -q "^\[multilib\]" "$PACMAN_CONF"; then
-    printf "${GREEN} Multilib is already enabled in $PACMAN_CONF."
+    printf "${GREEN} Multilib is already enabled in $PACMAN_CONF.\n"
 else
     printf "${GREEN} Enabling multilib...\n"
     # Match the multilib block range and strip the leading '#' comment symbol
-    sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF"
+    sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF\n"
     
     printf "${GREEN} Synchronizing package databases...\n"
     sudo pacman -Sy
@@ -233,6 +233,40 @@ if [[ $SDDM =~ ^[Yy]$ ]]; then
     sleep 1
 else
     printf "${YELLOW} SDDM Autologin NOT enabled. Moving on!\n"
+fi
+
+# Asus ROG Laptop packages
+read -n1 -rep "${CAT} OPTIONAL - Would you like to install Asus ROG laptop packages? (y/n)" ASUS
+if [[ $ASUS =~ ^[Yy]$ ]]; then
+    printf "${YELLOW} Installing Asus ROG laptop packages...\n"
+    asus_pkgs="asusctl rog-control-center supergfxctl"
+    if ! $aur -S --noconfirm --needed $asus_pkgs 2>&1 | tee -a $LOG; then
+        print_error " Failed to install Asus ROG laptop packages - please check ${LOG}\n"
+    else
+        printf "${YELLOW} Activating Asus services...\n"
+        sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
+        sleep 1
+        sudo systemctl enable --now supergfxd.service 2>&1 | tee -a $LOG
+        sleep 1
+    fi
+else
+    printf "${YELLOW} No Asus ROG laptop packages installed. Moving on!\n"
+fi
+
+# Blackarch Packages
+read -n1 -rep "${CAT} OPTIONAL - Would you like to install Blackarch Packages? (y/n)" BLACKARCH
+if [[ $BLACKARCH =~ ^[Yy]$ ]]; then
+    curl -O https://blackarch.org/strap.sh 2>&1 | tee -a $LOG
+    chmod +x strap.sh 2>&1 | tee -a $LOG
+    sudo ./strap.sh 2>&1 | tee -a $LOG
+    printf "${GREEN} Installing Blackarch packages...\n"
+    blackedarch_pkgs="blackarch-officials burpsuite dirbuster gnu-netcat less netdiscover sublist3r whatweb"
+    if ! $aur -S --noconfirm --needed $blackedarch_pkgs 2>&1 | tee -a $LOG; then
+        print_error " Failed to install BlackArch packages - please check ${LOG}\n"
+        sleep 1
+    fi
+else
+    printf "${YELLOW} No Blackarch Packages installed. Moving on!\n"
 fi
 
 printf "${GREEN} Autoinstaller completed.\n"

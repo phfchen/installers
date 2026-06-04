@@ -33,52 +33,8 @@ print_success() {
 
 # Ensure the script is run with root/sudo privileges
 if [ "$EUID" -ne 0 ]; then
-    echo "${RED} Please run this script using sudo."
+    echo "${RED} Please run this script using sudo.\n"
     exit 1
-fi
-
-# AUR Helper 
-ISgit=/sbin/git
-if [ -f "$ISgit" ]; then
-    printf "${GREEN} - AUR Helper dependencies found. Moving on!\n"
-else
-    printf "${GREEN} - AUR Helper dependencies NOT found.\n"
-    read -n1 -rep "${CAT} Would you like to install git and dependencies? (y/n)" GIT
-    if [[ $GIT =~ ^[Yy]$ ]]; then
-        printf "${GREEN} Installing git and dependencies.\n"
-        pacman -S --noconfirm --needed git base-devel 2>&1 | tee -a $LOG
-        sleep 3
-    else
-        printf "${RED} git and dependencies are needed for AUR Helper installation. Goodbye!\n"
-        exit
-    fi
-fi
-
-# Check if paru is installed
-ISparu=/sbin/paru
-
-if [ -f "$ISparu" ]; then
-    printf "${GREEN} - paru found. Moving on!\n"
-    aur=paru
-else
-    printf "${YELLOW} - paru NOT found.\n"
-    read -n4 -rep "${CAT} paru is needed, would you like to install paru? (y/n)" AUR
-    if [[ $AUR =~ ^[Yy]$ ]]; then
-        mkdir -p ~/Documents/git 2>&1 | tee -a $LOG
-        cd ~/Documents/git
-        git clone https://aur.archlinux.org/paru.git
-        cd paru
-        makepkg -si --noconfirm --needed 2>&1 | tee -a $LOG
-        cd ..
-	    rm -rf paru 2>&1 | tee -a $LOG
-        aur=paru
-        # Perform system update
-        printf "${YELLOW} Upgrading AUR packages to avoid issue.\n"
-        $aur -Syyu --noconfirm 2>&1 | tee -a $LOG
-    else
-        printf "${RED} - paru is required for auto-installation. Goodbye!\n"
-        exit
-    fi
 fi
 
 # G14 Repository
@@ -87,9 +43,9 @@ if [[ $G14 =~ ^[Yy]$ ]]; then
 
     # 3. Prevent duplicate entries by checking if the [g14] block already exists
     if grep -q "^\[g14\]" "$PACMAN_CONF"; then
-        printf "${YELLOW} The [g14] repository section is already present in $PACMAN_CONF."
+        printf "${YELLOW} The [g14] repository section is already present in $PACMAN_CONF.\n"
     else
-        printf "${YELLOW} Appending [g14] repository block to $PACMAN_CONF..."
+        printf "${YELLOW} Appending [g14] repository block to $PACMAN_CONF...\n"
         # Append the custom repository block to the end of the file safely
         cat << 'EOF' >> "$PACMAN_CONF"
 
@@ -103,41 +59,6 @@ EOF
     fi
 else
     printf "${YELLOW} Asus Strix G14 Laptop Repository not activated. Moving on!\n"
-fi
-
-# Asus ROG G14 packages
-read -n1 -rep "${CAT} OPTIONAL - Would you like to install Asus ROG laptop packages? (y/n)" ASUS
-if [[ $ASUS =~ ^[Yy]$ ]]; then
-    printf "${YELLOW} Installing Asus ROG laptop packages...\n"
-    asus_pkgs="asusctl rog-control-center supergfxctl"
-    if ! $aur -S --noconfirm --needed $asus_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install Asus ROG laptop packages - please check ${LOG}\n"
-    else
-        printf "${YELLOW} Activating Asus services...\n"
-        systemctl enable --now asusd.service 2>&1 | tee -a $LOG
-        sleep 1
-        systemctl enable --now supergfxd.service 2>&1 | tee -a $LOG
-        sleep 1
-    fi
-else
-    printf "${YELLOW} No Asus ROG laptop packages installed. Moving on!\n"
-fi
-
-# Blackarch Packages
-read -n1 -rep "${CAT} OPTIONAL - Would you like to install Blackarch Packages? (y/n)" BLACKARCH
-if [[ $BLACKARCH =~ ^[Yy]$ ]]; then
-    curl -O https://blackarch.org/strap.sh 2>&1 | tee -a $LOG
-    chmod +x strap.sh 2>&1 | tee -a $LOG
-    ./strap.sh 2>&1 | tee -a $LOG
-    printf "${GREEN} Installing Blackarch packages...\n"
-    blackedarch_pkgs="blackarch-officials burpsuite dirbuster gnu-netcat less netdiscover sublist3r whatweb"
-    if ! $aur -S --noconfirm --needed $blackedarch_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install BlackArch packages - please check ${LOG}\n"
-        sleep 1
-    fi
-    rm -rf ./strap.sh
-else
-    printf "${YELLOW} No Blackarch Packages installed. Moving on!\n"
 fi
 
 printf "${GREEN} Autoinstaller completed.\n"
