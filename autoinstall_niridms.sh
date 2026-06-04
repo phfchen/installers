@@ -31,52 +31,37 @@ print_success() {
     printf "%s%s%s\n" "$GREEN" "$1" "$NC"
 }
 
+# Ask for password once
+sudo -v
+
+# Keep sudo alive with a longer interval
+while true; do
+    sleep 60   # 1 minutes
+    sudo -n true
+done 2>/dev/null &
+
 # Define the config path
 PACMAN_CONF="/etc/pacman.conf"
 
-# Multilib Repository #
+# Multilib Repository 
 echo "${GREEN} Checking multilib repository status..."
 # Check if multilib is already uncommented
 if grep -q "^\[multilib\]" "$PACMAN_CONF"; then
-    echo "${GREEN} Multilib is already enabled in $PACMAN_CONF."
+    printf "${GREEN} Multilib is already enabled in $PACMAN_CONF."
 else
-    echo "${GREEN} Enabling multilib...\n"
+    printf "${GREEN} Enabling multilib...\n"
     # Match the multilib block range and strip the leading '#' comment symbol
     sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF"
     
-    echo "${GREEN} Synchronizing package databases...\n"
+    printf "${GREEN} Synchronizing package databases...\n"
     sudo pacman -Sy
-    echo "${GREEN} Multilib repository successfully activated!\n"
+    printf "${GREEN} Multilib repository successfully activated!\n"
 
     printf "${GREEN} Upgrading existing packages prior for autoinstaller.\n"
     sudo pacman -Syyu
 fi
 
-# G14 Repository #
-read -n1 -rep "${CAT} Would you like to activate Asus Strix G14 Laptop Repository? (y/n)" G14
-if [[ $G14 =~ ^[Yy]$ ]]; then
-
-    # 3. Prevent duplicate entries by checking if the [g14] block already exists
-    if grep -q "^\[g14\]" "$PACMAN_CONF"; then
-        echo "${YELLOW} The [g14] repository section is already present in $PACMAN_CONF."
-    else
-        echo "${YELLOW} Appending [g14] repository block to $PACMAN_CONF..."
-        # Append the custom repository block to the end of the file safely
-        cat << 'EOF' >> "$PACMAN_CONF"
-
-[g14]
-SigLevel = DatabaseNever Optional TrustAll
-Server = https://arch.asus-linux.org
-EOF
-        echo "${GREEN} G14 Repository configuration appended successfully."
-        echo "${GREEN} Synchronizing package databases..."
-        sudo pacman -Sy
-    fi
-else
-    printf "${YELLOW} Asus Strix G14 Laptop Repository not activated. Moving on!\n"
-fi
-
-# AUR Helper #
+# AUR Helper 
 ISgit=/sbin/git
 if [ -f "$ISgit" ]; then
     printf "${GREEN} - AUR Helper dependencies found. Moving on!\n"
@@ -120,7 +105,7 @@ else
     fi
 fi
 
-### Install packages ####
+# Install packages
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats power-profiles-daemon swayimg wev"
@@ -152,7 +137,7 @@ else
     sleep 1
 fi
 
-### Symbolic linking Config Files ###
+# Symbolic linking Config Files 
 read -n1 -rep "${CAT} Would you like to git clone and symbolic link config files? (y/n)" GITCFG
 if [[ $GITCFG =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Git cloning GitHub files...\n"
@@ -189,7 +174,7 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     ln -s ~/Documents/git/fphchen/dotfiles/configs/.zshrc ~/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/fphchen/dotfiles/configs/.vimrc ~/ 2>&1 | tee -a $LOG
 
-    ### Symbolic linking Pipewire upmix for 7.1 Surround Sound ###
+    # Symbolic linking Pipewire upmix for 7.1 Surround Sound
     mkdir -p ~/.config/pipewire/pipewire-pulse.conf.d 2>&1 | tee -a $LOG
     ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf ~/.config/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
     sudo ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf /etc/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
@@ -215,25 +200,7 @@ else
     printf "${YELLOW} No remote desktop streaming packages installed. Goodbye!\n"
 fi
 
-# Asus ROG G14 packages
-read -n1 -rep "${CAT} OPTIONAL - Would you like to install Asus ROG laptop packages? (y/n)" ASUS
-if [[ $ASUS =~ ^[Yy]$ ]]; then
-    printf "${YELLOW} Installing Asus ROG laptop packages...\n"
-    asus_pkgs="asusctl rog-control-center supergfxctl"
-    if ! $aur -S --noconfirm --needed $asus_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install Asus ROG laptop packages - please check ${LOG}\n"
-    else
-        printf "${YELLOW} Activating Asus services...\n"
-        sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
-        sleep 1
-        sudo systemctl enable --now supergfxd.service 2>&1 | tee -a $LOG
-        sleep 1
-    fi
-else
-    printf "${YELLOW} No Asus ROG laptop packages installed. Moving on!\n"
-fi
-
-### SDDM Packages ###
+# SDDM Packages
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install SDDM Login Manager? (y/n)" LOGINMAN
 if [[ $LOGINMAN =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Installing SDDM packages...\n"
@@ -254,7 +221,7 @@ else
     printf "${YELLOW} No SDDM packages installed. Moving on!\n"
 fi
 
-### Enable SDDM Autologin ###
+# Enable SDDM Autologin
 read -n1 -rep "${CAT} OPTIONAL - Would you like to enable SDDM autologin? (y/n)" SDDM
 if [[ $SDDM =~ ^[Yy]$ ]]; then
     sudo mkdir -p /etc/sddm.conf.d 2>&1 | tee -a $LOG
@@ -268,7 +235,49 @@ else
     printf "${YELLOW} SDDM Autologin NOT enabled. Moving on!\n"
 fi
 
-### Blackarch Packages ###
+# G14 Repository
+read -n1 -rep "${CAT} Would you like to activate Asus Strix G14 Laptop Repository? (y/n)" G14
+if [[ $G14 =~ ^[Yy]$ ]]; then
+
+    # 3. Prevent duplicate entries by checking if the [g14] block already exists
+    if grep -q "^\[g14\]" "$PACMAN_CONF"; then
+        printf "${YELLOW} The [g14] repository section is already present in $PACMAN_CONF."
+    else
+        printf "${YELLOW} Appending [g14] repository block to $PACMAN_CONF..."
+        # Append the custom repository block to the end of the file safely
+        cat << 'EOF' >> "$PACMAN_CONF"
+
+[g14]
+SigLevel = DatabaseNever Optional TrustAll
+Server = https://arch.asus-linux.org
+EOF
+        echo "${GREEN} G14 Repository configuration appended successfully."
+        echo "${GREEN} Synchronizing package databases..."
+        sudo pacman -Sy
+    fi
+else
+    printf "${YELLOW} Asus Strix G14 Laptop Repository not activated. Moving on!\n"
+fi
+
+# Asus ROG G14 packages
+read -n1 -rep "${CAT} OPTIONAL - Would you like to install Asus ROG laptop packages? (y/n)" ASUS
+if [[ $ASUS =~ ^[Yy]$ ]]; then
+    printf "${YELLOW} Installing Asus ROG laptop packages...\n"
+    asus_pkgs="asusctl rog-control-center supergfxctl"
+    if ! $aur -S --noconfirm --needed $asus_pkgs 2>&1 | tee -a $LOG; then
+        print_error " Failed to install Asus ROG laptop packages - please check ${LOG}\n"
+    else
+        printf "${YELLOW} Activating Asus services...\n"
+        sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
+        sleep 1
+        sudo systemctl enable --now supergfxd.service 2>&1 | tee -a $LOG
+        sleep 1
+    fi
+else
+    printf "${YELLOW} No Asus ROG laptop packages installed. Moving on!\n"
+fi
+
+# Blackarch Packages
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install Blackarch Packages? (y/n)" BLACKARCH
 if [[ $BLACKARCH =~ ^[Yy]$ ]]; then
     curl -O https://blackarch.org/strap.sh 2>&1 | tee -a $LOG
