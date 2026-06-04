@@ -55,14 +55,6 @@ fi
 # G14 Repository #
 read -n1 -rep "${CAT} Would you like to activate Asus Strix G14 Laptop Repository? (y/n)" G14
 if [[ $G14 =~ ^[Yy]$ ]]; then
-    echo "${GREEN} Initializing g14 repository setup for ASUS GA403UI..."
-
-    # 2. Safely receive and locally sign the asus-linux repository developer key
-    echo "${GREEN} Importing GPG key from Ubuntu keyserver..."
-    sudo pacman-key --recv-keys "$KEY_ID"
-
-    echo "${GREEN} Locally signing the repository key..."
-    sudo pacman-key --lsign-key "$KEY_ID"
 
     # 3. Prevent duplicate entries by checking if the [g14] block already exists
     if grep -q "^\[g14\]" "$PACMAN_CONF"; then
