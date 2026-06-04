@@ -44,14 +44,14 @@ done 2>/dev/null &
 PACMAN_CONF="/etc/pacman.conf"
 
 # Multilib Repository 
-echo "${GREEN} Checking multilib repository status...\n"
+printf "${GREEN} Checking multilib repository status...\n"
 # Check if multilib is already uncommented
 if grep -q "^\[multilib\]" "$PACMAN_CONF"; then
     printf "${GREEN} Multilib is already enabled in $PACMAN_CONF.\n"
 else
     printf "${GREEN} Enabling multilib...\n"
     # Match the multilib block range and strip the leading '#' comment symbol
-    sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF\n"
+    sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF"
     
     printf "${GREEN} Synchronizing package databases...\n"
     sudo pacman -Sy
@@ -226,9 +226,9 @@ read -n1 -rep "${CAT} OPTIONAL - Would you like to enable SDDM autologin? (y/n)"
 if [[ $SDDM =~ ^[Yy]$ ]]; then
     sudo mkdir -p /etc/sddm.conf.d 2>&1 | tee -a $LOG
     LOC="/etc/sddm.conf.d/autologin.conf"
-    echo -e "The following has been added to $LOC."
-    echo -e "[Autologin]\nUser=$(whoami)\nSession=niri" | tee -a $LOC
-    echo -e "Restarting SDDM service...\n"
+    printf "The following has been added to $LOC."
+    printf "[Autologin]\nUser=$(whoami)\nSession=niri" | tee -a $LOC
+    printf "Restarting SDDM service...\n"
     sudo systemctl reload-or-restart sddm 2>&1 | tee -a $LOG
     sleep 1
 else
