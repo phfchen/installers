@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Define variables
+GREEN="$(tput setaf 2)[OK]$(tput sgr0)"
+RED="$(tput setaf 1)[ERROR]$(tput sgr0)"
+YELLOW="$(tput setaf 3)[NOTE]$(tput sgr0)"
+CAT="$(tput setaf 6)[ACTION]$(tput sgr0)"
+LOG="/home/$(whoami)/install.log"
+PACMAN_CONF="/etc/pacman.conf"
+
 set -e
 
 printf "$(tput setaf 2)Welcome to the Arch Linux auto package installer!\n$(tput sgr0)"
@@ -29,8 +37,49 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Define the pacman config path
-PACMAN_CONF="/etc/pacman.conf"
+# AUR Helper 
+ISgit=/sbin/git
+if [ -f "$ISgit" ]; then
+    printf "${GREEN} - AUR Helper dependencies found. Moving on!\n"
+else
+    printf "${GREEN} - AUR Helper dependencies NOT found.\n"
+    read -n1 -rep "${CAT} Would you like to install git and dependencies? (y/n)" GIT
+    if [[ $GIT =~ ^[Yy]$ ]]; then
+        printf "${GREEN} Installing git and dependencies.\n"
+        pacman -S --noconfirm --needed git base-devel 2>&1 | tee -a $LOG
+        sleep 3
+    else
+        printf "${RED} git and dependencies are needed for AUR Helper installation. Goodbye!\n"
+        exit
+    fi
+fi
+
+# Check if paru is installed
+ISparu=/sbin/paru
+
+if [ -f "$ISparu" ]; then
+    printf "${GREEN} - paru found. Moving on!\n"
+    aur=paru
+else
+    printf "${YELLOW} - paru NOT found.\n"
+    read -n4 -rep "${CAT} paru is needed, would you like to install paru? (y/n)" AUR
+    if [[ $AUR =~ ^[Yy]$ ]]; then
+        mkdir -p ~/Documents/git 2>&1 | tee -a $LOG
+        cd ~/Documents/git
+        git clone https://aur.archlinux.org/paru.git
+        cd paru
+        makepkg -si --noconfirm --needed 2>&1 | tee -a $LOG
+        cd ..
+	    rm -rf paru 2>&1 | tee -a $LOG
+        aur=paru
+        # Perform system update
+        printf "${YELLOW} Upgrading AUR packages to avoid issue.\n"
+        $aur -Syyu --noconfirm 2>&1 | tee -a $LOG
+    else
+        printf "${RED} - paru is required for auto-installation. Goodbye!\n"
+        exit
+    fi
+fi
 
 # G14 Repository
 read -n1 -rep "${CAT} Would you like to activate Asus Strix G14 Laptop Repository? (y/n)" G14
