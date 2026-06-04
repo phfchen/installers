@@ -142,11 +142,11 @@ read -n1 -rep "${CAT} Would you like to git clone and symbolic link config files
 if [[ $GITCFG =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Git cloning GitHub files...\n"
     mkdir -p ~/Temp 2>&1 | tee -a $LOG
-    mkdir -p ~/Documents/git/fphchen/ 2>&1 | tee -a $LOG
-    cd ~/Documents/git/fphchen
-    git clone https://github.com/fphchen/dotfiles.git 2>&1 | tee -a $LOG
-    git clone https://github.com/fphchen/installers.git 2>&1 | tee -a $LOG
-    git clone https://github.com/fphchen/wallpapers.git 2>&1 | tee -a $LOG
+    mkdir -p ~/Documents/git/phfchen/ 2>&1 | tee -a $LOG
+    cd ~/Documents/git/phfchen
+    git clone https://github.com/phfchen/dotfiles.git 2>&1 | tee -a $LOG
+    git clone https://github.com/phfchen/installers.git 2>&1 | tee -a $LOG
+    git clone https://github.com/phfchen/wallpapers.git 2>&1 | tee -a $LOG
     printf "${YELLOW} Removing existing conflict config files...\n"
     rm -rf ~/.config/alacritty 2>&1 | tee -a $LOG
     rm -rf ~/.config/DankMaterialShell 2>&1 | tee -a $LOG
@@ -161,18 +161,18 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     rm -rf ~/.zshrc 2>&1 | tee -a $LOG
     rm -rf ~/.vimrc 2>&1 | tee -a $LOG
     printf "${YELLOW} Symbolic linking config files...\n"
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/alacritty ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/DankMaterialShell ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/dunst ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/kitty ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/lf ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/neofetch ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/niri ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/zathura ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/xfce4 ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/.bashrc ~/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/.zshrc ~/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/fphchen/dotfiles/configs/.vimrc ~/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/alacritty ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/DankMaterialShell ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/dunst ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/kitty ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/lf ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/neofetch ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/niri ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/zathura ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/xfce4 ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/.bashrc ~/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/.zshrc ~/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/.vimrc ~/ 2>&1 | tee -a $LOG
 
     # Symbolic linking Pipewire upmix for 7.1 Surround Sound
     mkdir -p ~/.config/pipewire/pipewire-pulse.conf.d 2>&1 | tee -a $LOG
@@ -209,10 +209,10 @@ if [[ $LOGINMAN =~ ^[Yy]$ ]]; then
         print_error " Failed to install SDDM packages - please check ${LOG}\n"
     else
         printf " Copying SDDM config files, themes, icons from cloned git repositories"
-        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf /etc/sddm.conf 2>&1 | tee -a $LOG
-        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf.d /etc/sddm.conf.d 2>&1 | tee -a $LOG
-        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/themes/archcraft /usr/share/sddm/themes/archcraft 2>&1 | tee -a $LOG
-        sudo cp -r ~/Documents/git/fphchen/dotfiles/images/.face  ~/.face 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/phfchen/dotfiles/configs/sddm/NiriDMS/sddm.conf /etc/sddm.conf 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/phfchen/dotfiles/configs/sddm/NiriDMS/sddm.conf.d /etc/sddm.conf.d 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/phfchen/dotfiles/configs/sddm/themes/archcraft /usr/share/sddm/themes/archcraft 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/phfchen/dotfiles/images/.face  ~/.face 2>&1 | tee -a $LOG
         printf " Activating SDDM services...\n"
         sudo systemctl enable sddm.service 2>&1 | tee -a $LOG
         sleep 1
