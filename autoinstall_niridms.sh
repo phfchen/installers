@@ -60,9 +60,9 @@ if [[ $G14 =~ ^[Yy]$ ]]; then
     if grep -q "^\[g14\]" "$PACMAN_CONF"; then
         echo "${YELLOW} The [g14] repository section is already present in $PACMAN_CONF."
     else
-        echo "${GREEN} Appending [g14] repository block to $PACMAN_CONF..."
+        echo "${YELLOW} Appending [g14] repository block to $PACMAN_CONF..."
         # Append the custom repository block to the end of the file safely
-        sudo cat << 'EOF' >> "$PACMAN_CONF"
+        cat << 'EOF' >> "$PACMAN_CONF"
 
 [g14]
 SigLevel = DatabaseNever Optional TrustAll
