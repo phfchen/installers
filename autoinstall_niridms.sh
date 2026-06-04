@@ -76,15 +76,13 @@ if [[ $G14 =~ ^[Yy]$ ]]; then
 SigLevel = DatabaseNever Optional TrustAll
 Server = https://arch.asus-linux.org
 EOF
-        echo "${GREEN} Repository configuration appended successfully."
+        echo "${GREEN} G14 Repository configuration appended successfully."
         echo "${GREEN} Synchronizing package databases..."
         sudo pacman -Sy
     fi
 else
     printf "${YELLOW} Asus Strix G14 Laptop Repository not activated. Moving on!\n"
 fi
-
-echo "${GREEN} Success! The g14 repository is now active on your system."
 
 # AUR Helper #
 ISgit=/sbin/git
@@ -114,11 +112,11 @@ else
     read -n4 -rep "${CAT} paru is needed, would you like to install paru? (y/n)" AUR
     if [[ $AUR =~ ^[Yy]$ ]]; then
         mkdir -p ~/Documents/git 2>&1 | tee -a $LOG
-        cd ~/Documents/git 2>&1 | tee -a $LOG
+        cd ~/Documents/git
         git clone https://aur.archlinux.org/paru.git
-        cd paru 2>&1 | tee -a $LOG
+        cd paru
         makepkg -si --noconfirm --needed 2>&1 | tee -a $LOG
-        cd .. 2>&1 | tee -a $LOG
+        cd ..
 	    rm -rf paru 2>&1 | tee -a $LOG
         aur=paru
         # Perform system update
@@ -168,7 +166,7 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Git cloning GitHub files...\n"
     mkdir -p ~/Temp 2>&1 | tee -a $LOG
     mkdir -p ~/Documents/git/fphchen/ 2>&1 | tee -a $LOG
-    cd ~/Documents/git/fphchen 2>&1 | tee -a $LOG
+    cd ~/Documents/git/fphchen
     git clone https://github.com/fphchen/dotfiles.git 2>&1 | tee -a $LOG
     git clone https://github.com/fphchen/installers.git 2>&1 | tee -a $LOG
     git clone https://github.com/fphchen/wallpapers.git 2>&1 | tee -a $LOG
