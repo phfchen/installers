@@ -29,6 +29,9 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Define the pacman config path
+PACMAN_CONF="/etc/pacman.conf"
+
 # G14 Repository
 read -n1 -rep "${CAT} Would you like to activate Asus Strix G14 Laptop Repository? (y/n)" G14
 if [[ $G14 =~ ^[Yy]$ ]]; then
