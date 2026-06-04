@@ -155,8 +155,8 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     rm -rf ~/.config/lf 2>&1 | tee -a $LOG
     rm -rf ~/.config/neofetch 2>&1 | tee -a $LOG
     rm -rf ~/.config/niri 2>&1 | tee -a $LOG
-    rm -rf ~/.config/zathura 2>&1 | tee -a $LOG
     rm -rf ~/.config/xfce4 2>&1 | tee -a $LOG
+    rm -rf ~/.config/zathura 2>&1 | tee -a $LOG
     rm -rf ~/.bashrc 2>&1 | tee -a $LOG
     rm -rf ~/.zshrc 2>&1 | tee -a $LOG
     rm -rf ~/.vimrc 2>&1 | tee -a $LOG
@@ -168,8 +168,8 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     ln -s ~/Documents/git/phfchen/dotfiles/configs/lf ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/neofetch ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/niri ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/phfchen/dotfiles/configs/zathura ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/xfce4 ~/.config/ 2>&1 | tee -a $LOG
+    ln -s ~/Documents/git/phfchen/dotfiles/configs/zathura ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/.bashrc ~/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/.zshrc ~/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/.vimrc ~/ 2>&1 | tee -a $LOG
