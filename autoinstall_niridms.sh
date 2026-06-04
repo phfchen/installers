@@ -34,12 +34,6 @@ print_success() {
 # Define the config path
 PACMAN_CONF="/etc/pacman.conf"
 
-# Ensure the script is run with root/sudo privileges
-if [ "$EUID" -ne 0 ]; then
-    echo "${RED} Please run this script using sudo."
-    exit 1
-fi
-
 # Multilib Repository #
 echo "${GREEN} Checking multilib repository status..."
 # Check if multilib is already uncommented
@@ -51,11 +45,11 @@ else
     sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF"
     
     echo "${GREEN} Synchronizing package databases...\n"
-    pacman -Sy
+    sudo pacman -Sy
     echo "${GREEN} Multilib repository successfully activated!\n"
 
     printf "${GREEN} Upgrading existing packages prior for autoinstaller.\n"
-    pacman -Syyu
+    sudo pacman -Syyu
 fi
 
 # G14 Repository #
@@ -65,10 +59,10 @@ if [[ $G14 =~ ^[Yy]$ ]]; then
 
     # 2. Safely receive and locally sign the asus-linux repository developer key
     echo "${GREEN} Importing GPG key from Ubuntu keyserver..."
-    pacman-key --recv-keys "$KEY_ID"
+    sudo pacman-key --recv-keys "$KEY_ID"
 
     echo "${GREEN} Locally signing the repository key..."
-    pacman-key --lsign-key "$KEY_ID"
+    sudo pacman-key --lsign-key "$KEY_ID"
 
     # 3. Prevent duplicate entries by checking if the [g14] block already exists
     if grep -q "^\[g14\]" "$PACMAN_CONF"; then
@@ -76,7 +70,7 @@ if [[ $G14 =~ ^[Yy]$ ]]; then
     else
         echo "${GREEN} Appending [g14] repository block to $PACMAN_CONF..."
         # Append the custom repository block to the end of the file safely
-        cat << 'EOF' >> "$PACMAN_CONF"
+        sudo cat << 'EOF' >> "$PACMAN_CONF"
 
 [g14]
 SigLevel = DatabaseNever Optional TrustAll
@@ -84,7 +78,7 @@ Server = https://arch.asus-linux.org
 EOF
         echo "${GREEN} Repository configuration appended successfully."
         echo "${GREEN} Synchronizing package databases..."
-        pacman -Sy
+        sudo pacman -Sy
     fi
 else
     printf "${YELLOW} Asus Strix G14 Laptop Repository not activated. Moving on!\n"
@@ -101,7 +95,7 @@ else
     read -n1 -rep "${CAT} Would you like to install git and dependencies? (y/n)" GIT
     if [[ $GIT =~ ^[Yy]$ ]]; then
         printf "${GREEN} Installing git and dependencies.\n"
-        pacman -S --noconfirm --needed git base-devel 2>&1 | tee -a $LOG
+        sudo pacman -S --noconfirm --needed git base-devel 2>&1 | tee -a $LOG
         sleep 3
     else
         printf "${RED} git and dependencies are needed for AUR Helper installation. Goodbye!\n"
@@ -149,7 +143,7 @@ if [[ $PKGS =~ ^[Yy]$ ]]; then
         print_error " Failed to install additional packages - please check ${LOG}\n"
         exit 1
     fi
-    print_success " All necessary packages installed successfully.\n"
+    print_success "${GREEN} All necessary packages installed successfully.\n"
 else
     printf "${YELLOW} No packages installed. Moving on!\n"
     sleep 1
@@ -162,7 +156,7 @@ if [[ $AMD =~ ^[Yy]$ ]]; then
         print_error " Failed to install AMD packages - please check ${LOG}\n"
         exit 1
     fi
-    print_success " All AMD packages installed successfully.\n"
+    print_success "${GREEN} All AMD packages installed successfully.\n"
 else
     printf "${YELLOW} No AMD packages installed. Moving on!\n"
     sleep 1
@@ -208,7 +202,7 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     ### Symbolic linking Pipewire upmix for 7.1 Surround Sound ###
     mkdir -p ~/.config/pipewire/pipewire-pulse.conf.d 2>&1 | tee -a $LOG
     ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf ~/.config/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
-    ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf /etc/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
+    sudo ln -s /usr/share/pipewire/pipewire.conf.avail/20-upmix.conf /etc/pipewire/pipewire-pulse.conf.d/ 2>&1 | tee -a $LOG
 else
     printf "${YELLOW} No symbolic link created. Moving on!\n"
     sleep 1
@@ -217,13 +211,13 @@ fi
 # SUNSHINE
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install Sunshine RD/Game streaming packages? (y/n)" SUNSHINE
 if [[ $SUNSHINE =~ ^[Yy]$ ]]; then
-    printf "${GREEN} Installing Sunshine packages...\n"
+    printf "${YELLOW} Installing Sunshine packages...\n"
     rds_pkgs="sunshine"
     if ! $aur -S --noconfirm --needed $rds_pkgs 2>&1 | tee -a $LOG; then
-       	print_error "Failed to install remote desktop streaming packages - please check ${LOG} \n"
+       	print_error " Failed to install remote desktop streaming packages - please check ${LOG} \n"
     else
-        printf " Activating avahi-daemon services for Sunshine...\n"
-        systemctl enable --now avahi-daemon 2>&1 | tee -a $LOG
+        printf "${YELLOW} Activating avahi-daemon services for Sunshine...\n"
+        sudo systemctl enable --now avahi-daemon 2>&1 | tee -a $LOG
         sleep 1
         systemctl --user --now enable app-dev.lizardbyte.app.Sunshine 2>&1 | tee -a $LOG
     fi
@@ -234,15 +228,15 @@ fi
 # Asus ROG G14 packages
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install Asus ROG laptop packages? (y/n)" ASUS
 if [[ $ASUS =~ ^[Yy]$ ]]; then
-    printf "${GREEN} Installing Asus ROG laptop packages...\n"
+    printf "${YELLOW} Installing Asus ROG laptop packages...\n"
     asus_pkgs="asusctl rog-control-center supergfxctl"
     if ! $aur -S --noconfirm --needed $asus_pkgs 2>&1 | tee -a $LOG; then
-        print_error "Failed to install Asus ROG laptop packages - please check ${LOG}\n"
+        print_error " Failed to install Asus ROG laptop packages - please check ${LOG}\n"
     else
-        printf " Activating Asus services...\n"
-        systemctl enable --now asusd.service 2>&1 | tee -a $LOG
+        printf "${YELLOW} Activating Asus services...\n"
+        sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
         sleep 1
-        systemctl enable --now supergfxd.service 2>&1 | tee -a $LOG
+        sudo systemctl enable --now supergfxd.service 2>&1 | tee -a $LOG
         sleep 1
     fi
 else
@@ -252,18 +246,18 @@ fi
 ### SDDM Packages ###
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install SDDM Login Manager? (y/n)" LOGINMAN
 if [[ $LOGINMAN =~ ^[Yy]$ ]]; then
-    printf "${GREEN} Installing SDDM packages...\n"
+    printf "${YELLOW} Installing SDDM packages...\n"
     loginman_pkgs="sddm qt5-declarative qt5-graphicaleffects qt5-quickcontrols qt5-quickcontrols2 qt5-svg qt5-multimedia gst-libav gst-plugins-good phonon-qt5-gstreamer"
     if ! $aur -S --noconfirm --needed $loginman_pkgs 2>&1 | tee -a $LOG; then
-        print_error "Failed to install SDDM packages - please check ${LOG}\n"
+        print_error " Failed to install SDDM packages - please check ${LOG}\n"
     else
         printf " Copying SDDM config files, themes, icons from cloned git repositories"
-        cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf /etc/sddm.conf 2>&1 | tee -a $LOG
-        cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf.d /etc/sddm.conf.d 2>&1 | tee -a $LOG
-        cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/themes/archcraft /usr/share/sddm/themes/archcraft 2>&1 | tee -a $LOG
-        cp -r ~/Documents/git/fphchen/dotfiles/images/.face  ~/.face 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf /etc/sddm.conf 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/NiriDMS/sddm.conf.d /etc/sddm.conf.d 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/fphchen/dotfiles/configs/sddm/themes/archcraft /usr/share/sddm/themes/archcraft 2>&1 | tee -a $LOG
+        sudo cp -r ~/Documents/git/fphchen/dotfiles/images/.face  ~/.face 2>&1 | tee -a $LOG
         printf " Activating SDDM services...\n"
-        systemctl enable sddm.service 2>&1 | tee -a $LOG
+        sudo systemctl enable sddm.service 2>&1 | tee -a $LOG
         sleep 1
     fi
 else
@@ -273,12 +267,12 @@ fi
 ### Enable SDDM Autologin ###
 read -n1 -rep "${CAT} OPTIONAL - Would you like to enable SDDM autologin? (y/n)" SDDM
 if [[ $SDDM =~ ^[Yy]$ ]]; then
-    mkdir -p /etc/sddm.conf.d 2>&1 | tee -a $LOG
+    sudo mkdir -p /etc/sddm.conf.d 2>&1 | tee -a $LOG
     LOC="/etc/sddm.conf.d/autologin.conf"
     echo -e "The following has been added to $LOC."
     echo -e "[Autologin]\nUser=$(whoami)\nSession=niri" | tee -a $LOC
     echo -e "Restarting SDDM service...\n"
-    systemctl reload-or-restart sddm 2>&1 | tee -a $LOG
+    sudo systemctl reload-or-restart sddm 2>&1 | tee -a $LOG
     sleep 1
 else
     printf "${YELLOW} SDDM Autologin NOT enabled. Moving on!\n"
@@ -289,11 +283,11 @@ read -n1 -rep "${CAT} OPTIONAL - Would you like to install Blackarch Packages? (
 if [[ $BLACKARCH =~ ^[Yy]$ ]]; then
     curl -O https://blackarch.org/strap.sh 2>&1 | tee -a $LOG
     chmod +x strap.sh 2>&1 | tee -a $LOG
-    ./strap.sh 2>&1 | tee -a $LOG
+    sudo ./strap.sh 2>&1 | tee -a $LOG
     printf "${GREEN} Installing Blackarch packages...\n"
     blackedarch_pkgs="blackarch-officials burpsuite dirbuster gnu-netcat less netdiscover sublist3r whatweb"
     if ! $aur -S --noconfirm --needed $blackedarch_pkgs 2>&1 | tee -a $LOG; then
-        print_error "Failed to install BlackArch packages - please check ${LOG}\n"
+        print_error " Failed to install BlackArch packages - please check ${LOG}\n"
         sleep 1
     fi
 else
