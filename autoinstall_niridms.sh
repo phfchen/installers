@@ -115,7 +115,7 @@ else
     if [[ $AUR =~ ^[Yy]$ ]]; then
         mkdir -p ~/Documents/git 2>&1 | tee -a $LOG
         cd ~/Documents/git 2>&1 | tee -a $LOG
-        git clone https://aur.archlinux.org/paru.git 2>&1 | tee -a $LOG
+        git clone https://aur.archlinux.org/paru.git
         cd paru 2>&1 | tee -a $LOG
         makepkg -si --noconfirm --needed 2>&1 | tee -a $LOG
         cd .. 2>&1 | tee -a $LOG
