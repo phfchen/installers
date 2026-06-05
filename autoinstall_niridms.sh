@@ -282,4 +282,4 @@ else
     printf "${YELLOW} No Blackarch Packages installed. Moving on!\n"
 fi
 
-print_success "${GREEN} Autoinstaller completed.\n"
+print_success "Autoinstaller completed."
