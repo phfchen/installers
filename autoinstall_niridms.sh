@@ -55,7 +55,7 @@ else
     
     printf "${GREEN} Synchronizing package databases...\n"
     sudo pacman -Sy
-    printf "${GREEN} Multilib repository successfully activated!\n"
+    print_success "Multilib repository successfully activated!\n"
 
     printf "${GREEN} Upgrading existing packages prior for autoinstaller.\n"
     sudo pacman -Syyu
@@ -109,7 +109,7 @@ fi
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats power-profiles-daemon swayimg wev"
-    app_pkgs="vlc zathura zathura-pdf-mupdf zathura-ps"
+    app_pkgs="kitty vlc zathura zathura-pdf-mupdf zathura-ps"
     util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
     font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
@@ -118,9 +118,22 @@ if [[ $PKGS =~ ^[Yy]$ ]]; then
         print_error " Failed to install additional packages - please check ${LOG}\n"
         exit 1
     fi
-    print_success "${GREEN} All necessary packages installed successfully.\n"
+    print_success "All necessary packages installed successfully."
 else
     printf "${YELLOW} No packages installed. Moving on!\n"
+    sleep 1
+fi
+
+read -n1 -rep "${CAT} Would you like to install nVidia packages? (y/n)" NVIDIA
+if [[ $NVIDIA =~ ^[Yy]$ ]]; then
+    nvidia_pkgs="nvidia-open-dkms nvidia-utils lib32-nvidia-utils"
+    if ! $aur -S --noconfirm --needed $nvidia_pkgs 2>&1 | tee -a $LOG; then
+        print_error " Failed to install nVidia packages - please check ${LOG}\n"
+        exit 1
+    fi
+    print_success "All nVidia packages installed successfully."
+else
+    printf "${YELLOW} No nVidia packages installed. Moving on!\n"
     sleep 1
 fi
 
@@ -131,7 +144,7 @@ if [[ $AMD =~ ^[Yy]$ ]]; then
         print_error " Failed to install AMD packages - please check ${LOG}\n"
         exit 1
     fi
-    print_success "${GREEN} All AMD packages installed successfully.\n"
+    print_success "All AMD packages installed successfully."
 else
     printf "${YELLOW} No AMD packages installed. Moving on!\n"
     sleep 1
@@ -141,7 +154,7 @@ fi
 read -n1 -rep "${CAT} Would you like to git clone and symbolic link config files? (y/n)" GITCFG
 if [[ $GITCFG =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Git cloning GitHub files...\n"
-    mkdir -p ~/Temp 2>&1 | tee -a $LOG
+    mkdir -p ~/Desktop ~/Documents ~/Downloads ~/Music ~/Pictures ~/Projects ~/Public ~/Temp ~/Templates ~/Videos ~2>&1 | tee -a $LOG
     mkdir -p ~/Documents/git/phfchen/ 2>&1 | tee -a $LOG
     cd ~/Documents/git/phfchen
     git clone https://github.com/phfchen/dotfiles.git 2>&1 | tee -a $LOG
@@ -269,4 +282,4 @@ else
     printf "${YELLOW} No Blackarch Packages installed. Moving on!\n"
 fi
 
-printf "${GREEN} Autoinstaller completed.\n"
+print_success "${GREEN} Autoinstaller completed.\n"

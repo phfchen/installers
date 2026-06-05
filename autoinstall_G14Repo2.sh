@@ -33,7 +33,7 @@ print_success() {
 
 # Ensure the script is run with root/sudo privileges
 if [ "$EUID" -ne 0 ]; then
-    print_error "${RED} Please run this script using sudo.\n"
+    echo "${RED} Please run this script using sudo.\n"
     exit 1
 fi
 
@@ -53,7 +53,7 @@ if [[ $G14 =~ ^[Yy]$ ]]; then
 SigLevel = DatabaseNever Optional TrustAll
 Server = https://arch.asus-linux.org
 EOF
-        print_success "${GREEN} G14 Repository configuration appended successfully."
+        echo "${GREEN} G14 Repository configuration appended successfully."
         echo "${GREEN} Synchronizing package databases..."
         pacman -Sy
     fi
