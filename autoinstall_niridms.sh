@@ -150,6 +150,19 @@ else
     sleep 1
 fi
 
+read -n1 -rep "${CAT} Would you like to install PipeWire audio packages? (y/n)" AUDIO
+if [[ $AUDIO =~ ^[Yy]$ ]]; then
+    audio_pkgs="pipewire wireplumber piewire-pulse pipewire-alsa alsa-utils sof-firmware"
+    if ! $aur -S --noconfirm --needed $audio_pkgs 2>&1 | tee -a $LOG; then
+        print_error " Failed to install PipeWire audio packages - please check ${LOG}\n"
+        exit 1
+    fi
+    print_success "All PipeWire audio packages installed successfully."
+else
+    printf "${YELLOW} No PipeWire audio packages installed. Moving on!\n"
+    sleep 1
+fi
+
 # Symbolic linking Config Files 
 read -n1 -rep "${CAT} Would you like to git clone and symbolic link config files? (y/n)" GITCFG
 if [[ $GITCFG =~ ^[Yy]$ ]]; then

@@ -61,4 +61,51 @@ else
     printf "${YELLOW} Asus Strix G14 Laptop Repository not activated. Moving on!\n"
 fi
 
+# G14 Custom Kernal
+#read -n1 -rep "${CAT} Would you like to install Asus Strix G14 Custom Kernel packages? (y/n)" G14KERNEL
+#if [[ $G14KERNEL =~ ^[Yy]$ ]]; then
+#    g14kernel_pkgs="linux-g14 linux-g14-headers"
+#    if ! $aur -S --noconfirm --needed $g14kernel_pkgs 2>&1 | tee -a $LOG; then
+#        print_error " Failed to install Asus G14 Custom Kernel packages - please check ${LOG}\n"
+#        exit 1
+#    fi
+#    print_success "All Asus G14 Custom Kernel packages installed successfully."
+#else
+#    printf "${YELLOW} No Asus G14 Custom Kernel packages installed. Moving on!\n"
+#    sleep 1
+#fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 printf "${GREEN} Autoinstaller completed.\n"
