@@ -286,7 +286,7 @@ if [[ $BLACKARCH =~ ^[Yy]$ ]]; then
     chmod +x strap.sh 2>&1 | tee -a $LOG
     sudo ./strap.sh 2>&1 | tee -a $LOG
     printf "${GREEN} Installing Blackarch packages...\n"
-    blackedarch_pkgs="blackarch-officials burpsuite dirbuster gnu-netcat less netdiscover sublist3r whatweb"
+    blackedarch_pkgs="blackarch-officials burpsuite dirbuster openbsd-netcat less netdiscover sublist3r whatweb"
     if ! $aur -S --noconfirm --needed $blackedarch_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install BlackArch packages - please check ${LOG}\n"
         sleep 1
