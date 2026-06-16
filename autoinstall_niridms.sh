@@ -167,8 +167,8 @@ fi
 read -n1 -rep "${CAT} Would you like to git clone and symbolic link config files? (y/n)" GITCFG
 if [[ $GITCFG =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Git cloning GitHub files...\n"
-    mkdir -p ~/Desktop ~/Documents ~/Downloads ~/Music ~/Pictures ~/Projects ~/Public ~/Temp ~/Templates ~/Videos ~2>&1 | tee -a $LOG
-    mkdir -p ~/Documents/git/phfchen/ 2>&1 | tee -a $LOG
+    mkdir -p ~/Desktop ~/Documents ~/Downloads ~/Music ~/Pictures ~/Projects ~/Public ~/Temp ~/Templates ~/Videos 2>&1 | tee -a $LOG
+    mkdir -p ~/Documents/git/phfchen 2>&1 | tee -a $LOG
     cd ~/Documents/git/phfchen
     git clone https://github.com/phfchen/dotfiles.git 2>&1 | tee -a $LOG
     git clone https://github.com/phfchen/installers.git 2>&1 | tee -a $LOG
