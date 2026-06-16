@@ -55,7 +55,7 @@ else
     
     printf "${GREEN} Synchronizing package databases...\n"
     sudo pacman -Sy
-    print_success "Multilib repository successfully activated!\n"
+    print_success "Multilib repository successfully activated!"
 
     printf "${GREEN} Upgrading existing packages prior for autoinstaller.\n"
     sudo pacman -Syyu
