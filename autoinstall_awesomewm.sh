@@ -101,11 +101,11 @@ fi
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     awesomewm_pkgs="awesome-git feh picom polybar python-pywal rofi sxiv xdotool zscroll"
-    app_pkgs="firefox gimp gparted kitty libreoffice openvpn pavucontrol signal-desktop vlc zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="brightnessctl cifs-utils dunst fzf gvfs-nfs gvfs-smb networkmanager-openvpn neofetch nfs-utils pacman-contrib python-pip rust-script slurp smbclient trash-cli unzip usbutils yt-dlp"
-    font_pkgs="noto-fonts-cjk noto-fonts-emoji ttf-firacode-nerd"
+    app_pkgs="kitty vlc zathura zathura-pdf-mupdf zathura-ps"
+    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
+    font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
-    extra_pkgs="brave-bin joplin joplin-desktop spotify"
+    extra_pkgs="brave-bin firefox gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
     if ! $aur -S --noconfirm --needed $awesomewm_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install additional packages - please check ${LOG}\n"
         exit 1

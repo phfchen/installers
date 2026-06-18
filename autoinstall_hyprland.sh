@@ -100,12 +100,12 @@ fi
 ### Install packages ####
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
-    hyprland_pkgs="grim hyprland polkit polkit-kde-agent swayidle swayimg waybar wl-clipboard wofi xdg-desktop-portal-hyprland xorg-xhost xorg-xwayland swww swaylock wev wlr-randr"
-    app_pkgs="firefox gimp gparted kitty libreoffice openvpn pavucontrol signal-desktop vlc vim zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="brightnessctl cifs-utils dunst fzf gst-libav gvfs-nfs gvfs-smb lf networkmanager networkmanager-openvpn neofetch nfs-utils pacman-contrib python-pip rust rust-script slurp smbclient trash-cli unzip usbutilsi yt-dlp"
-    font_pkgs="noto-fonts-cjk noto-fonts-emoji ttf-firacode-nerd"
+    hyprland_pkgs="grim hyprland polkit-kde-agent swayidle swayimg waybar wl-clipboard wofi xdg-desktop-portal-hyprland xorg-xwayland swww swaylock wev wlr-randr"
+    app_pkgs="kitty vlc zathura zathura-pdf-mupdf zathura-ps"
+    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
+    font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
-    extra_pkgs="brave-bin joplin spotify"
+    extra_pkgs="brave-bin firefox gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
     if ! $aur -S --noconfirm --needed $hyprland_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install additional packages - please check ${LOG}\n"
         exit 1
