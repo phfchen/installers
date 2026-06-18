@@ -110,12 +110,12 @@ read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats power-profiles-daemon swayimg wev"
     app_pkgs="kitty vlc zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
+    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
     font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
     extra_pkgs="brave-bin firefox gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
     if ! $aur -S --noconfirm --needed $dms_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install additional packages - please check ${LOG}\n"
+        print_error " Failed to install additional packages - please check ${LOG}"
         exit 1
     fi
     print_success "All necessary packages installed successfully."
@@ -128,7 +128,7 @@ read -n1 -rep "${CAT} Would you like to install nVidia packages? (y/n)" NVIDIA
 if [[ $NVIDIA =~ ^[Yy]$ ]]; then
     nvidia_pkgs="nvidia-open-dkms nvidia-utils lib32-nvidia-utils"
     if ! $aur -S --noconfirm --needed $nvidia_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install nVidia packages - please check ${LOG}\n"
+        print_error " Failed to install nVidia packages - please check ${LOG}"
         exit 1
     fi
     print_success "All nVidia packages installed successfully."
@@ -141,7 +141,7 @@ read -n1 -rep "${CAT} Would you like to install AMD packages? (y/n)" AMD
 if [[ $AMD =~ ^[Yy]$ ]]; then
     amd_pkgs="amdgpu_top"
     if ! $aur -S --noconfirm --needed $amd_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install AMD packages - please check ${LOG}\n"
+        print_error " Failed to install AMD packages - please check ${LOG}"
         exit 1
     fi
     print_success "All AMD packages installed successfully."
@@ -154,12 +154,25 @@ read -n1 -rep "${CAT} Would you like to install PipeWire audio packages? (y/n)" 
 if [[ $AUDIO =~ ^[Yy]$ ]]; then
     audio_pkgs="pipewire wireplumber piewire-pulse pipewire-alsa alsa-utils sof-firmware"
     if ! $aur -S --noconfirm --needed $audio_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install PipeWire audio packages - please check ${LOG}\n"
+        print_error " Failed to install PipeWire audio packages - please check ${LOG}"
         exit 1
     fi
     print_success "All PipeWire audio packages installed successfully."
 else
     printf "${YELLOW} No PipeWire audio packages installed. Moving on!\n"
+    sleep 1
+fi
+
+read -n1 -rep "${CAT} Would you like to install Bluetooth packages? (y/n)" BLUETOOTH
+if [[ $BLUETOOTH =~ ^[Yy]$ ]]; then
+    bluetooth_pkgs="bluez bluez-utils"
+    if ! $aur -S --noconfirm --needed $bluetooth_pkgs 2>&1 | tee -a $LOG; then
+        print_error " Failed to install Bluetooth packages - please check ${LOG}"
+        exit 1
+    fi
+    print_success "All Bluetooth packages installed successfully."
+else
+    printf "${YELLOW} No Bluetooth audio packages installed. Moving on!\n"
     sleep 1
 fi
 
@@ -215,7 +228,7 @@ if [[ $SUNSHINE =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Installing Sunshine packages...\n"
     rds_pkgs="sunshine"
     if ! $aur -S --noconfirm --needed $rds_pkgs 2>&1 | tee -a $LOG; then
-       	print_error " Failed to install remote desktop streaming packages - please check ${LOG} \n"
+       	print_error " Failed to install remote desktop streaming packages - please check ${LOG}"
     else
         printf "${YELLOW} Activating avahi-daemon services for Sunshine...\n"
         sudo systemctl enable --now avahi-daemon 2>&1 | tee -a $LOG
@@ -232,7 +245,7 @@ if [[ $LOGINMAN =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Installing SDDM packages...\n"
     loginman_pkgs="sddm qt5-declarative qt5-graphicaleffects qt5-quickcontrols qt5-quickcontrols2 qt5-svg qt5-multimedia gst-libav gst-plugins-good phonon-qt5-gstreamer"
     if ! $aur -S --noconfirm --needed $loginman_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install SDDM packages - please check ${LOG}\n"
+        print_error " Failed to install SDDM packages - please check ${LOG}"
     else
         printf " Copying SDDM config files, themes, icons from cloned git repositories"
         sudo cp -r ~/Documents/git/phfchen/dotfiles/configs/sddm/NiriDMS/sddm.conf /etc/sddm.conf 2>&1 | tee -a $LOG
@@ -267,7 +280,7 @@ if [[ $ASUS =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Installing Asus ROG laptop packages...\n"
     asus_pkgs="asusctl rog-control-center supergfxctl"
     if ! $aur -S --noconfirm --needed $asus_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install Asus ROG laptop packages - please check ${LOG}\n"
+        print_error " Failed to install Asus ROG laptop packages - please check ${LOG}"
     else
         printf "${YELLOW} Activating Asus services...\n"
         sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
@@ -288,7 +301,7 @@ if [[ $BLACKARCH =~ ^[Yy]$ ]]; then
     printf "${GREEN} Installing Blackarch packages...\n"
     blackedarch_pkgs="blackarch-officials burpsuite dirbuster openbsd-netcat less netdiscover sublist3r whatweb"
     if ! $aur -S --noconfirm --needed $blackedarch_pkgs 2>&1 | tee -a $LOG; then
-        print_error " Failed to install BlackArch packages - please check ${LOG}\n"
+        print_error " Failed to install BlackArch packages - please check ${LOG}"
         sleep 1
     fi
 else
