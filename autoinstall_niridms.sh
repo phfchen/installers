@@ -110,7 +110,7 @@ read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats power-profiles-daemon swayimg wev"
     app_pkgs="kitty vlc zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted lf neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk"
+    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler yt-dlp xorg-xhost xdg-desktop-portal-gtk yazi"
     font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
     extra_pkgs="brave-bin firefox gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
@@ -191,7 +191,6 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     rm -rf ~/.config/DankMaterialShell 2>&1 | tee -a $LOG
     rm -rf ~/.config/dunst 2>&1 | tee -a $LOG
     rm -rf ~/.config/kitty 2>&1 | tee -a $LOG
-    rm -rf ~/.config/lf 2>&1 | tee -a $LOG
     rm -rf ~/.config/neofetch 2>&1 | tee -a $LOG
     rm -rf ~/.config/niri 2>&1 | tee -a $LOG
     rm -rf ~/.config/xfce4 2>&1 | tee -a $LOG
@@ -204,7 +203,6 @@ if [[ $GITCFG =~ ^[Yy]$ ]]; then
     ln -s ~/Documents/git/phfchen/dotfiles/configs/DankMaterialShell ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/dunst ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/kitty ~/.config/ 2>&1 | tee -a $LOG
-    ln -s ~/Documents/git/phfchen/dotfiles/configs/lf ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/neofetch ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/niri ~/.config/ 2>&1 | tee -a $LOG
     ln -s ~/Documents/git/phfchen/dotfiles/configs/xfce4 ~/.config/ 2>&1 | tee -a $LOG
