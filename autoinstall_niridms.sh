@@ -110,7 +110,7 @@ read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats power-profiles-daemon swayimg wev"
     app_pkgs="kitty vlc zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler xorg-xhost xdg-desktop-portal-gtk yazi yt-dlp"
+    util_pkgs="bat brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler xorg-xhost xdg-desktop-portal-gtk yazi yt-dlp"
     font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
     theme_pkgs=""
     extra_pkgs="brave-bin firefox gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
@@ -180,7 +180,7 @@ fi
 read -n1 -rep "${CAT} Would you like to git clone and symbolic link config files? (y/n)" GITCFG
 if [[ $GITCFG =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Git cloning GitHub files...\n"
-    mkdir -p ~/Desktop ~/Documents ~/Downloads ~/Music ~/Pictures ~/Projects ~/Public ~/Temp ~/Templates ~/Videos 2>&1 | tee -a $LOG
+    mkdir -p ~/Desktop ~/Documents ~/Downloads ~/Music ~/Pictures ~/Projects ~/Videos 2>&1 | tee -a $LOG
     mkdir -p ~/Documents/git/phfchen 2>&1 | tee -a $LOG
     cd ~/Documents/git/phfchen
     git clone https://github.com/phfchen/dotfiles.git 2>&1 | tee -a $LOG
