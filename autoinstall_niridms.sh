@@ -108,7 +108,7 @@ fi
 # Install packages
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
-    dms_pkgs="cava cups-pk-helper kimageformats power-profiles-daemon swayimg wev"
+    dms_pkgs="cava cups-pk-helper kimageformats tuned tuned-ppd swayimg wev"
     app_pkgs="kitty vlc zathura zathura-pdf-mupdf zathura-ps"
     util_pkgs="bat brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler xorg-xhost xdg-desktop-portal-gtk yazi yt-dlp"
     font_pkgs="noto-fonts noto-fonts-cjk noto-fonts-emoji"
