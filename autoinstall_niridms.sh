@@ -23,12 +23,12 @@ sleep 1
 
 # Function to print error messages
 print_error() {
-    printf " %s%s\n" "$RED" "$1" "$NC" >&2
+    printf "%s%s\n" "$RED" " $1" "$NC" >&2
 }
 
 # Function to print success messages
 print_success() {
-    printf "%s%s%s\n" "$GREEN" "$1" "$NC"
+    printf "%s%s%s\n" "$GREEN" " $1" "$NC"
 }
 
 # Ask for password once
@@ -43,7 +43,7 @@ done 2>/dev/null &
 # Define the config path
 PACMAN_CONF="/etc/pacman.conf"
 
-# Multilib Repository 
+# Multilib Repository
 printf "${GREEN} Checking multilib repository status...\n"
 # Check if multilib is already uncommented
 if grep -q "^\[multilib\]" "$PACMAN_CONF"; then
