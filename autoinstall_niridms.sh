@@ -51,7 +51,7 @@ if grep -q "^\[multilib\]" "$PACMAN_CONF"; then
 else
     printf "${GREEN} Enabling multilib...\n"
     # Match the multilib block range and strip the leading '#' comment symbol
-    sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF"
+    sudo sed -i '/^#\[multilib-testing\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF"
     
     printf "${GREEN} Synchronizing package databases...\n"
     sudo pacman -Sy
