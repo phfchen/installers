@@ -113,7 +113,7 @@ if [[ $PKGS =~ ^[Yy]$ ]]; then
     util_pkgs="bat brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler xorg-xhost xdg-desktop-portal-gtk yazi yt-dlp"
     font_pkgs="adwaita-fonts inter-font noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu ttf-fira-code ttf-liberation"
     theme_pkgs=""
-    extra_pkgs="brave-bin firefox gimp joplin-desktop libreoffice signal-desktop spotify-launcher"
+    extra_pkgs="brave-bin firefox gimp joplin-desktop libreoffice rustdesk signal-desktop spotify-launcher thunderbird"
     if ! $aur -S --noconfirm --needed $dms_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install additional packages - please check ${LOG}"
         exit 1
