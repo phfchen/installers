@@ -51,7 +51,7 @@ if grep -q "^\[multilib\]" "$PACMAN_CONF"; then
 else
     printf "${GREEN} Enabling multilib...\n"
     # Match the multilib block range and strip the leading '#' comment symbol
-    sudo sed -i '/^#\[multilib-testing\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF"
+    sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman\.d\/mirrorlist/ s/^#//' "$PACMAN_CONF"
     
     printf "${GREEN} Synchronizing package databases...\n"
     sudo pacman -Sy
@@ -109,11 +109,11 @@ fi
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats tuned tuned-ppd swayimg wev"
-    app_pkgs="kitty tradingview vlc zathura zathura-pdf-mupdf zathura-ps"
+    app_pkgs="firefox kitty tradingview vlc zathura zathura-pdf-mupdf zathura-ps"
     util_pkgs="bat brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted neofetch networkmanager nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler xorg-xhost xdg-desktop-portal-gtk yazi yt-dlp"
     font_pkgs="adwaita-fonts inter-font noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu ttf-fira-code ttf-liberation"
     theme_pkgs=""
-    extra_pkgs="brave-bin firefox gimp joplin-desktop libreoffice rustdesk signal-desktop spotify-launcher thunderbird"
+    extra_pkgs="brave-bin exodus gimp joplin-desktop libreoffice orca-slicer-bin rustdesk signal-desktop spotify-launcher trezor-suite-bin thunderbird"
     if ! $aur -S --noconfirm --needed $dms_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install additional packages - please check ${LOG}"
         exit 1
