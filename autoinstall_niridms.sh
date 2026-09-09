@@ -126,7 +126,7 @@ fi
 
 read -n1 -rep "${CAT} Would you like to install nVidia packages? (y/n)" NVIDIA
 if [[ $NVIDIA =~ ^[Yy]$ ]]; then
-    nvidia_pkgs="nvidia-open-dkms nvidia-utils lib32-nvidia-utils"
+    nvidia_pkgs="nvidia-open-dkms nvidia-settings nvidia-utils lib32-nvidia-utils"
     if ! $aur -S --noconfirm --needed $nvidia_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install nVidia packages - please check ${LOG}"
         exit 1
@@ -276,14 +276,12 @@ fi
 read -n1 -rep "${CAT} OPTIONAL - Would you like to install Asus ROG laptop packages? (y/n)" ASUS
 if [[ $ASUS =~ ^[Yy]$ ]]; then
     printf "${YELLOW} Installing Asus ROG laptop packages...\n"
-    asus_pkgs="asusctl rog-control-center supergfxctl"
+    asus_pkgs="asusctl rog-control-center"
     if ! $aur -S --noconfirm --needed $asus_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install Asus ROG laptop packages - please check ${LOG}"
     else
         printf "${YELLOW} Activating Asus services...\n"
         sudo systemctl enable --now asusd.service 2>&1 | tee -a $LOG
-        sleep 1
-        sudo systemctl enable --now supergfxd.service 2>&1 | tee -a $LOG
         sleep 1
     fi
 else
