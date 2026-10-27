@@ -109,11 +109,12 @@ fi
 read -n1 -rep "${CAT} Would you like to install the packages? (y/n)" PKGS
 if [[ $PKGS =~ ^[Yy]$ ]]; then
     dms_pkgs="cava cups-pk-helper kimageformats tuned tuned-ppd swayimg wev"
-    app_pkgs="firefox kitty tradingview vlc zathura zathura-pdf-mupdf zathura-ps"
-    util_pkgs="7zip bat brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted hplip neofetch networkmanager ntfsprogs nwg-look polkit polkit-gnome sbctl slurp smbclient usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler xorg-xhost xdg-desktop-portal-gtk yazi yt-dlp"
+    app_pkgs="firefox kitty mpv tradingview vlc zathura zathura-pdf-mupdf zathura-ps"
+    util_pkgs="7zip bat brightnessctl fzf ffmpeg grim gvfs-nfs gvfs-smb gparted hplip neofetch networkmanager ntfsprogs nwg-look polkit polkit-gnome sbctl slurp smbclient stirling-pdf-desktop-bin usbutils thunar thunar-archive-plugin thunar-volman thunar-media-tags-plugin tigervnc vlc-plugin-ffmpeg tumbler xorg-xhost xdg-desktop-portal-gtk yazi yt-dlp"
     font_pkgs="adwaita-fonts inter-font noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu ttf-fira-code ttf-liberation"
     theme_pkgs=""
-    extra_pkgs="brave-bin exodus gimp joplin-desktop libreoffice orca-slicer-bin rustdesk signal-desktop spotify-launcher trezor-suite-bin thunderbird"
+    im_pkgs="fcitx5 fcitx5-configtool fcitx5-chewingfcitx5-im"
+    extra_pkgs="brave-bin exodus gimp joplin-desktop libreoffice orca-slicer-bin gst-plugin-gtk rustdesk signal-desktop spotify-launcher trezor-suite-appimage thunderbird"
     if ! $aur -S --noconfirm --needed $dms_pkgs $app_pkgs $util_pkgs $font_pkgs $theme_pkgs $extra_pkgs 2>&1 | tee -a $LOG; then
         print_error " Failed to install additional packages - please check ${LOG}"
         exit 1
